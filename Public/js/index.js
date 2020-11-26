@@ -2,15 +2,53 @@
 window.onload = function () {
     // constant
     const video = document.querySelector('#live-camera');
+    const canvas = document.querySelector('#canvas');
+    const img = document.querySelector('#screenshot');
+    const worker = Tesseract.createWorker();
+    (async () => {
+        await worker.load();
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+    })();
+
+
+    function screenshot() {
+        canvas.getContext("2d").drawImage(video, 0, 0);
+        img.src = canvas.toDataURL("image/webp");
+        recognize(img.src);
+    }
+
+    function recognize(dataUrl) {
+        // console.log(dataUrl);
+        // based on example code from
+        // https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
+        (async () => {
+            const {data: {text}} = await worker.recognize(dataUrl);
+            console.log('result => ' + text);
+        })();
+    }
+
     function handleSuccess(stream) {
         // log
         console.log('Open camera succeeded!');
         console.log(stream);
+        video.videoWidth = stream.getVideoTracks()[0].getSettings().width;
+        video.videoHeight = stream.getVideoTracks()[0].getSettings().height;
         mdui.snackbar('Camera access granted!')
 
         // attach stream to video element
         video.srcObject = stream;
         video.play();
+
+        // screenshots
+        canvas.width = stream.getVideoTracks()[0].getSettings().width;
+        canvas.height = stream.getVideoTracks()[0].getSettings().height;
+        // This is a bug of HTML since it will obtain ZERO
+        // console.log('videoWidth ' + video.videoWidth);
+        // console.log('videoHeight ' + video.videoHeight);
+
+        // trigger ocr engine
+        setInterval(screenshot, 1000);
     }
 
     function handleError(e) {
@@ -27,29 +65,7 @@ window.onload = function () {
     };
 
     // trigger camera
-    let cameraButton = document.createElement('button');
-    cameraButton.onclick = function () {
-        navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
-    };
-    cameraButton.click();
-
-    // based on example code from
-    // https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
-    Tesseract.recognize(
-        'https://tesseract.projectnaptha.com/img/eng_bw.png',
-        'eng',
-        {
-            logger: m => {
-                let loadingText = document.querySelector('#loading-text');
-                let msg = m.status.toString().slice(0, 1).toUpperCase() + m.status.toString().slice(1);
-                console.log(msg);
-                loadingText.innerHTML = msg;
-                if (msg === 'Initialized api') {
-                    setTimeout(document.querySelector('#loading').remove(), 500);
-                }
-            }
-        }
-    ).then(({data: {text}}) => {
-        console.log(text);
-    })
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then(handleSuccess)
+        .catch(handleError);
 }

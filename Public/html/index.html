@@ -4,6 +4,7 @@
     <title>Lookout - Be my eyes</title>
 
     <!--  mdui  -->
+    <!--  https://www.mdui.org/  -->
     <script src="/js/mdui.min.js"></script>
     <link rel="stylesheet" href="/css/mdui.min.css">
 
@@ -12,6 +13,7 @@
     <link rel="stylesheet" href="/css/index.css">
 
     <!--  tesseract.js  -->
+    <!--  https://github.com/naptha/tesseract.js -->
     <script src="/js/tesseract.min.js"></script>
 </head>
 
@@ -22,15 +24,16 @@
     <main>
 
         <div class="mdui-col-xs-12">
-            <div id="loading">
-                <div id="loading-icon" class="mdui-spinner mdui-spinner-colorful"></div>
-                <a id="loading-text" class="mdui-text-center" style="font-size: 3em">Loading...</a>
-            </div>
+            <!--            <div id="loading">-->
+            <!--                <div id="loading-icon" class="mdui-spinner mdui-spinner-colorful"></div>-->
+            <!--                <a id="loading-text" class="mdui-text-center" style="font-size: 3em">Loading...</a>-->
+            <!--            </div>-->
 
-            <div id="video-container" class=".mdui-video-container" >
-                <video id="live-camera" class="mdui-video-fluid"></video>
+            <div id="video-container" class=".mdui-video-container">
+                <video id="live-camera" class="mdui-video-fluid" autoplay></video>
             </div>
-
+            <img id="screenshot" src="" alt="screenshot"/>
+            <canvas id="canvas" style="display: none"></canvas>
         </div>
 
     </main>
