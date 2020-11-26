@@ -1,0 +1,12 @@
+#loading-text {
+    margin-left: 2vh;
+}
+
+#loading {
+    position: absolute;
+    display: block;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+
+}

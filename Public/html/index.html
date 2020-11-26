@@ -10,6 +10,9 @@
     <!--  custom  -->
     <script src="/js/index.js"></script>
     <link rel="stylesheet" href="/css/index.css">
+
+    <!--  tesseract.js  -->
+    <script src="/js/tesseract.min.js"></script>
 </head>
 
 <body class="mdui-theme-primary-blue">
@@ -19,7 +22,15 @@
     <main>
 
         <div class="mdui-col-xs-12">
-            Hello world!
+            <div id="loading">
+                <div id="loading-icon" class="mdui-spinner mdui-spinner-colorful"></div>
+                <a id="loading-text" class="mdui-text-center" style="font-size: 3em">Loading...</a>
+            </div>
+
+            <div id="video-container" class=".mdui-video-container" >
+                <video class="mdui-video-fluid"></video>
+            </div>
+
         </div>
 
     </main>
