@@ -10,3 +10,8 @@
     text-align: center;
 
 }
+
+#live-camera {
+    height: 100%;
+    width: 100%;
+}

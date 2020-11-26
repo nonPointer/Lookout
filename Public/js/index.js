@@ -1,12 +1,20 @@
 // onload
 window.onload = function () {
+    // constant
+    const video = document.querySelector('#live-camera');
     function handleSuccess(stream) {
+        // log
         console.log('Open camera succeeded!');
         console.log(stream);
         mdui.snackbar('Camera access granted!')
+
+        // attach stream to video element
+        video.srcObject = stream;
+        video.play();
     }
 
     function handleError(e) {
+        // log
         console.log('Open camera failed!');
         console.log(e);
         mdui.snackbar('Camera access denied!');
@@ -36,6 +44,9 @@ window.onload = function () {
                 let msg = m.status.toString().slice(0, 1).toUpperCase() + m.status.toString().slice(1);
                 console.log(msg);
                 loadingText.innerHTML = msg;
+                if (msg === 'Initialized api') {
+                    setTimeout(document.querySelector('#loading').remove(), 500);
+                }
             }
         }
     ).then(({data: {text}}) => {
