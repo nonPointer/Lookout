@@ -2,7 +2,7 @@
 window.onload = function () {
     // constant
     const video = document.querySelector('#live-camera');
-    const canvas = document.querySelector('#canvasSelection');
+    const canvasSelection = document.querySelector('#canvasSelection');
     const worker = Tesseract.createWorker();
     (async () => {
         await worker.load();
@@ -22,11 +22,12 @@ window.onload = function () {
         let sX = (cameraWidth - sWidth) / 2;
         let sY = (cameraHeight - sHeight) / 2;
         // set css properties
-        canvas.height = sHeight;
-        canvas.width = sWidth;
+        canvasSelection.height = sHeight;
+        canvasSelection.width = sWidth;
 
-        canvas.getContext("2d").drawImage(video, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
-        recognize(canvas);
+        canvasSelection.getContext("2d").drawImage(video, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
+
+        recognize(canvasSelection);
     }
 
     function recognize(dataUrl) {
