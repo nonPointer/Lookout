@@ -2,21 +2,47 @@
 window.onload = function () {
     // constant
     const video = document.querySelector('#live-camera');
+    const processThreshold = 5;
     const canvasSelection = document.querySelector('#canvasSelection');
     const canvasLive = document.querySelector('#canvasLive');
     const captionText = document.querySelector('#captionText');
     const worker = Tesseract.createWorker();
+    const scheduler = Tesseract.createScheduler();
     (async () => {
         await worker.load();
         await worker.loadLanguage('eng');
         await worker.initialize('eng');
     })();
+    for (let i = 0; i < 5; ++i) {
+        (async () => {
+            let worker = Tesseract.createWorker();
+            await worker.load();
+            await worker.loadLanguage('eng');
+            await worker.initialize('eng');
+            scheduler.addWorker(worker);
+        })();
+    }
 
     // global var
     let cameraHeight;
     let cameraWidth;
-    let processInterval = 1000; // dynamic adjusted
+    let processInterval = 1000;
+    let processCounter = 0;
+    // center the source section
+    let sWidth = 240;
+    let sHeight = 120;
+    let sX;
+    let sY;
 
+    function preview() {
+        // fill shade
+        canvasLive.height = cameraHeight;
+        canvasLive.width = cameraWidth;
+        canvasLive.getContext("2d").drawImage(video, 0, 0);
+        let canvasLiveContext = canvasLive.getContext('2d');
+        canvasLiveContext.strokeStyle = 'red';
+        canvasLiveContext.strokeRect(sX, sY, sWidth, sHeight);
+    }
 
     function screenshot() {
         // center the source section
@@ -27,39 +53,30 @@ window.onload = function () {
         // set css properties
         canvasSelection.height = sHeight;
         canvasSelection.width = sWidth;
-0
-        // fill shade
-        canvasLive.height = cameraHeight;
-        canvasLive.width = cameraWidth;
-        canvasLive.getContext("2d").drawImage(video, 0, 0);
-        let canvasLiveContext = canvasLive.getContext('2d');
-        canvasLiveContext.strokeStyle = 'red';
-        canvasLiveContext.strokeRect(sX, sY, sWidth, sHeight);
 
         canvasSelection.getContext("2d").drawImage(video, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
-        recognize(canvasSelection);
+        if (processCounter <= processThreshold) {
+            processCounter++; // increase counter
+
+            // console.log(dataUrl);
+            // based on example code from
+            // https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
+            (async () => {
+                // const {data: {text}} = await worker.recognize(dataUrl);
+                const {data: {text}} = await scheduler.addJob('recognize', canvasSelection);
+                let result = text.toString().replaceAll(/\r?\n|\r/g, ' '); // replace new line with space
+                result = result.toString().replaceAll(/\s{2,}|[^\sa-zA-Z0-9]/g, ''); // replace abnormal char
+                console.log('result => ' + result);
+
+                // update counter
+                processCounter--; // decrease counter
+                // update caption
+                captionText.innerText = result;
+            })();
+        }
     }
 
-    function recognize(dataUrl) {
-        // console.log(dataUrl);
-        // based on example code from
-        // https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
-        (async () => {
-            const {data: {text}} = await worker.recognize(dataUrl);
-            let result = text.toString().replaceAll(/\r?\n|\r/g, ' '); // replace new line with space
-            result = result.toString().replaceAll(/\s{2,}|[^\sa-zA-Z0-9]/g, ''); // replace abnormal char
-            console.log('result => ' + result);
 
-            // update caption
-            captionText.innerText = result;
-            // adjust interval
-            if (result.length < 20) {
-                processInterval = 1000;
-            } else {
-                processInterval = 3000;
-            }
-        })();
-    }
 
     function handleSuccess(stream) {
         // log
@@ -80,8 +97,18 @@ window.onload = function () {
         // console.log('videoWidth ' + video.videoWidth);
         // console.log('videoHeight ' + video.videoHeight);
 
-        // trigger ocr engine
-        setInterval(screenshot, processInterval);
+        // update sX sY
+        sX = (cameraWidth - sWidth) / 2;
+        sY = (cameraHeight - sHeight) / 2;
+
+        // lazy load
+        setTimeout(() => {
+            // update preview
+            setInterval(preview, 33); // 30fps
+            // trigger ocr engine
+            setInterval(screenshot, processInterval);
+        }, 2000);
+
     }
 
     function handleError(e) {
