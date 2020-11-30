@@ -1,8 +1,10 @@
 // onload
 window.onload = function () {
     // constant
+    const processInterval = 1500;
     const video = document.querySelector('#live-camera');
     const canvasSelection = document.querySelector('#canvasSelection');
+    const canvasLive = document.querySelector('#canvasLive');
     const worker = Tesseract.createWorker();
     (async () => {
         await worker.load();
@@ -24,9 +26,16 @@ window.onload = function () {
         // set css properties
         canvasSelection.height = sHeight;
         canvasSelection.width = sWidth;
+0
+        // fill shade
+        canvasLive.height = cameraHeight;
+        canvasLive.width = cameraWidth;
+        canvasLive.getContext("2d").drawImage(video, 0, 0);
+        let canvasLiveContext = canvasLive.getContext('2d');
+        canvasLiveContext.strokeStyle = 'red';
+        canvasLiveContext.strokeRect(sX, sY, sWidth, sHeight);
 
         canvasSelection.getContext("2d").drawImage(video, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
-
         recognize(canvasSelection);
     }
 
@@ -61,7 +70,7 @@ window.onload = function () {
         // console.log('videoHeight ' + video.videoHeight);
 
         // trigger ocr engine
-        setInterval(screenshot, 1000);
+        setInterval(screenshot, processInterval);
     }
 
     function handleError(e) {
