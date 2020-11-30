@@ -11,16 +11,20 @@ window.onload = function () {
         await worker.initialize('eng');
     })();
 
+    // global var
+    let cameraHeight;
+    let cameraWidth;
+
 
     function screenshot() {
         // center the source section
         let sWidth = 240;
         let sHeight = 120;
-        let sX = (canvas.width - sWidth) / 2;
-        let sY = (canvas.height - sHeight) / 2;
+        let sX = (cameraWidth - sWidth) / 2;
+        let sY = (cameraHeight - sHeight) / 2;
         // set css properties
-        canvas.setAttribute('height', sHeight.toString() + 'px');
-        canvas.setAttribute('width', sWidth.toString() + 'px');
+        canvas.height = sHeight;
+        canvas.width = sWidth;
 
         canvas.getContext("2d").drawImage(video, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
         img.src = canvas.toDataURL("image/webp");
@@ -51,8 +55,8 @@ window.onload = function () {
         video.play();
 
         // screenshots
-        canvas.width = stream.getVideoTracks()[0].getSettings().width;
-        canvas.height = stream.getVideoTracks()[0].getSettings().height;
+        cameraHeight = stream.getVideoTracks()[0].getSettings().height;
+        cameraWidth = stream.getVideoTracks()[0].getSettings().width;
         // This is a bug of HTML since it will obtain ZERO
         // console.log('videoWidth ' + video.videoWidth);
         // console.log('videoHeight ' + video.videoHeight);
