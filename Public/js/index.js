@@ -13,7 +13,16 @@ window.onload = function () {
 
 
     function screenshot() {
-        canvas.getContext("2d").drawImage(video, 0, 0);
+        // center the source section
+        let sWidth = 240;
+        let sHeight = 120;
+        let sX = (canvas.width - sWidth) / 2;
+        let sY = (canvas.height - sHeight) / 2;
+        // set css properties
+        canvas.setAttribute('height', sHeight.toString() + 'px');
+        canvas.setAttribute('width', sWidth.toString() + 'px');
+
+        canvas.getContext("2d").drawImage(video, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
         img.src = canvas.toDataURL("image/webp");
         recognize(img.src);
     }
@@ -25,7 +34,6 @@ window.onload = function () {
         (async () => {
             const {data: {text}} = await worker.recognize(dataUrl);
             let result = text.toString().replaceAll(/(\s{2,}|[^\sa-zA-Z0-9])/g, '');
-            console.log('len = ' + result.length);
             console.log('result => ' + result);
         })();
     }
