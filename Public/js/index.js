@@ -3,7 +3,6 @@ window.onload = function () {
     // constant
     const video = document.querySelector('#live-camera');
     const canvas = document.querySelector('#canvas');
-    const img = document.querySelector('#screenshot');
     const worker = Tesseract.createWorker();
     (async () => {
         await worker.load();
@@ -27,8 +26,7 @@ window.onload = function () {
         canvas.width = sWidth;
 
         canvas.getContext("2d").drawImage(video, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
-        img.src = canvas.toDataURL("image/webp");
-        recognize(img.src);
+        recognize(canvas);
     }
 
     function recognize(dataUrl) {
