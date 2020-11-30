@@ -24,7 +24,7 @@ window.onload = function () {
         // https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
         (async () => {
             const {data: {text}} = await worker.recognize(dataUrl);
-            let result = text.toString().replaceAll(/(\s{2,}|[^\sa-zA-Z0-9])/g);
+            let result = text.toString().replaceAll(/(\s{2,}|[^\sa-zA-Z0-9])/g, '');
             console.log('len = ' + result.length);
             console.log('result => ' + result);
         })();
