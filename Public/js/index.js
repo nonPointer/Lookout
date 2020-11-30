@@ -2,7 +2,7 @@
 window.onload = function () {
     // constant
     const video = document.querySelector('#live-camera');
-    const canvas = document.querySelector('#canvas');
+    const canvas = document.querySelector('#canvasSelection');
     const worker = Tesseract.createWorker();
     (async () => {
         await worker.load();
