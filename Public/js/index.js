@@ -108,7 +108,7 @@ window.onload = function () {
                 console.log('result => ' + result);
                 // update counter
                 processCounter--; // decrease counter
-                if (result.length > 3) {
+                if (result.length >= 3) {
                     handleResult(result);
                 }
             })();
