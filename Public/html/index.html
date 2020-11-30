@@ -22,12 +22,13 @@
 <div class="mdui-container">
 
     <main>
+        <div class="mdui-col-xs-2"></div>
 
-        <div class="mdui-col-xs-12">
-            <!--            <div id="loading">-->
-            <!--                <div id="loading-icon" class="mdui-spinner mdui-spinner-colorful"></div>-->
-            <!--                <a id="loading-text" class="mdui-text-center" style="font-size: 3em">Loading...</a>-->
-            <!--            </div>-->
+        <div class="mdui-col-xs-8">
+            <div id="loading">
+                <div id="loading-icon" class="mdui-spinner mdui-spinner-colorful"></div>
+                <a id="loading-text" class="mdui-text-center" style="font-size: 3em">Loading...</a>
+            </div>
 
             <div id="video-container" class=".mdui-video-container">
                 <video id="live-camera" class="mdui-video-fluid" autoplay></video>
@@ -41,7 +42,29 @@
             <div id="caption">
                 <p id="captionText" class="mdui-text-center"></p>
             </div>
+
+
+            <div id="controlPanel">
+                <label class="mdui-switch">
+                    <input id="multiline" type="checkbox"/>
+                    <i class="mdui-switch-icon"></i>
+                    Multiline
+                </label>
+                <label class="mdui-switch">
+                    <input id="lowercase" type="checkbox"/>
+                    <i class="mdui-switch-icon"></i>
+                    Lowercase
+                </label>
+                <label class="mdui-switch">
+                    <input id="speech" type="checkbox"/>
+                    <i class="mdui-switch-icon"></i>
+                    Speech
+                </label>
+            </div>
+
         </div>
+
+        <div class="mdui-col-xs-2"></div>
 
     </main>
 </div>

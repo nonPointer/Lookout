@@ -6,20 +6,21 @@ window.onload = function () {
     const canvasSelection = document.querySelector('#canvasSelection');
     const canvasLive = document.querySelector('#canvasLive');
     const captionText = document.querySelector('#captionText');
-    const worker = Tesseract.createWorker();
     const scheduler = Tesseract.createScheduler();
-    (async () => {
-        await worker.load();
-        await worker.loadLanguage('eng');
-        await worker.initialize('eng');
-    })();
+    const synth = window.speechSynthesis;
+    const multilineSwitch = document.querySelector('#multiline');
+    const speech = document.querySelector('#speech');
+    const lowercase = document.querySelector('#lowercase');
+
+
+    // init workers
     for (let i = 0; i < 5; ++i) {
         (async () => {
             let worker = Tesseract.createWorker();
             await worker.load();
             await worker.loadLanguage('eng');
             await worker.initialize('eng');
-            scheduler.addWorker(worker);
+            await scheduler.addWorker(worker);
         })();
     }
 
@@ -33,6 +34,12 @@ window.onload = function () {
     let sHeight = 120;
     let sX;
     let sY;
+
+    const speak = (msg) => {
+        let u = new SpeechSynthesisUtterance(msg);
+        if (!synth.speaking)
+            synth.speak(u);
+    };
 
     function preview() {
         // fill shade
@@ -62,21 +69,53 @@ window.onload = function () {
             // based on example code from
             // https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
             (async () => {
-                // const {data: {text}} = await worker.recognize(dataUrl);
                 const {data: {text}} = await scheduler.addJob('recognize', canvasSelection);
-                let result = text.toString().replaceAll(/\r?\n|\r/g, ' '); // replace new line with space
-                result = result.toString().replaceAll(/\s{2,}|[^\sa-zA-Z0-9]/g, ''); // replace abnormal char
-                console.log('result => ' + result);
+                let result = text;
 
+                // check multiline
+                if (multilineSwitch.checked)
+                    result = text.toString().replaceAll(/\r?\n|\r/g, ' '); // replace new line with space
+                else
+                    result = result.split('\n')[0].trim();
+
+                // check lowercase
+                if (lowercase.checked)
+                    result = result.toLowerCase();
+
+                result = result.toString().replaceAll(/\s{2,}|[^\sa-zA-Z0-9]/g, ''); // replace abnormal char
+                result = result.trim();
+                t = result.split(' ');
+                result = [];
+                let len = 0;
+                while (t.length > 0 && len < 10) {
+                    result.push(t[0]);
+                    len++;
+                    t.shift();
+                }
+                result = result.join(' ');
+
+                // remove short and sparse results
+                let sparse = [...result.matchAll(/\s/g)].length;
+                if (sparse >= result.length / 2 - 1) {
+                    result = '';
+                }
+
+                console.log('result => ' + result);
                 // update counter
                 processCounter--; // decrease counter
-                // update caption
-                captionText.innerText = result;
+                if (result.length > 3) {
+                    handleResult(result);
+                }
             })();
         }
     }
 
-
+    function handleResult(result) {
+        // update caption
+        captionText.innerText = result;
+        if (speech.checked)
+            speak(result);
+    }
 
     function handleSuccess(stream) {
         // log
@@ -103,11 +142,12 @@ window.onload = function () {
 
         // lazy load
         setTimeout(() => {
+            document.querySelector('#loading').setAttribute('style', 'display: none');
             // update preview
             setInterval(preview, 33); // 30fps
             // trigger ocr engine
             setInterval(screenshot, processInterval);
-        }, 2000);
+        }, 4000);
 
     }
 
