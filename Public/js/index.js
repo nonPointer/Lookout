@@ -1,10 +1,10 @@
 // onload
 window.onload = function () {
     // constant
-    const processInterval = 1500;
     const video = document.querySelector('#live-camera');
     const canvasSelection = document.querySelector('#canvasSelection');
     const canvasLive = document.querySelector('#canvasLive');
+    const captionText = document.querySelector('#captionText');
     const worker = Tesseract.createWorker();
     (async () => {
         await worker.load();
@@ -15,6 +15,7 @@ window.onload = function () {
     // global var
     let cameraHeight;
     let cameraWidth;
+    let processInterval = 1000; // dynamic adjusted
 
 
     function screenshot() {
@@ -45,8 +46,18 @@ window.onload = function () {
         // https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
         (async () => {
             const {data: {text}} = await worker.recognize(dataUrl);
-            let result = text.toString().replaceAll(/(\s{2,}|[^\sa-zA-Z0-9])/g, '');
+            let result = text.toString().replaceAll(/\r?\n|\r/g, ' '); // replace new line with space
+            result = result.toString().replaceAll(/\s{2,}|[^\sa-zA-Z0-9]/g, ''); // replace abnormal char
             console.log('result => ' + result);
+
+            // update caption
+            captionText.innerText = result;
+            // adjust interval
+            if (result.length < 20) {
+                processInterval = 1000;
+            } else {
+                processInterval = 3000;
+            }
         })();
     }
 
