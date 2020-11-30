@@ -11,6 +11,11 @@ window.onload = function () {
     const multilineSwitch = document.querySelector('#multiline');
     const speech = document.querySelector('#speech');
     const lowercase = document.querySelector('#lowercase');
+    const fontsize = document.querySelector('#fontsize');
+
+    fontsize.onchange = function () {
+        captionText.style.fontSize = fontsize.value.toString() + 'vh';
+    }
 
 
     // init workers
