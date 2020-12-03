@@ -96,7 +96,12 @@ window.onload = function () {
                 if (lowercase.checked)
                     result = result.toLowerCase();
 
-                result = result.toString().replaceAll(/\s{2,}|[^\sa-zA-Z0-9]/g, ''); // replace abnormal char
+
+                // replace abnormal char
+                result = result.toString().replaceAll(/\s{2,}|[^\sa-zA-Z0-9]/g, '');
+                // replace single char except a
+                result = result.replaceAll(/\s[^a]\s/g, '');
+
                 result = result.trim();
                 t = result.split(' ');
                 result = [];
