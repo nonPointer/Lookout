@@ -67,10 +67,10 @@ window.onload = function () {
 
     function screenshot() {
         // center the source section
-        let sWidth = 240;
-        let sHeight = 120;
-        let sX = (cameraWidth - sWidth) / 2;
-        let sY = (cameraHeight - sHeight) / 2;
+        sWidth = 240;
+        sHeight = 120;
+        sX = (cameraWidth - sWidth) / 2;
+        sY = (cameraHeight - sHeight) / 2;
         // set css properties
         canvasSelection.height = sHeight;
         canvasSelection.width = sWidth;
