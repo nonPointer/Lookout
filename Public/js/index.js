@@ -13,6 +13,7 @@ window.onload = function () {
     const lowercase = document.querySelector('#lowercase');
     const fontsize = document.querySelector('#fontsize');
     const darkMode = document.querySelector('#darkMode');
+    const wordsRect = canvasLive.getContext("2d");
 
     darkMode.onchange = function () {
         if (darkMode.checked) {
@@ -48,6 +49,7 @@ window.onload = function () {
     let sHeight = 120;
     let sX;
     let sY;
+    let words = [];
 
     const speak = (msg) => {
         let u = new SpeechSynthesisUtterance(msg);
@@ -63,6 +65,20 @@ window.onload = function () {
         let canvasLiveContext = canvasLive.getContext('2d');
         canvasLiveContext.strokeStyle = 'red';
         canvasLiveContext.strokeRect(sX, sY, sWidth, sHeight);
+        // based on example from
+        // https://tesseract.projectnaptha.com/
+        words.forEach(function (w) {
+            let b = w.bbox;
+
+            wordsRect.strokeWidth = 2;
+            wordsRect.strokeStyle = 'red';
+            wordsRect.strokeRect(b.x0 + sX, b.y0 + sY, b.x1 - b.x0, b.y1 - b.y0);
+            wordsRect.beginPath();
+            wordsRect.moveTo(w.baseline.x0 + sX, w.baseline.y0 + sY);
+            wordsRect.lineTo(w.baseline.x1 + sX, w.baseline.y1 + sY);
+            wordsRect.strokeStyle = 'green';
+            wordsRect.stroke();
+        })
     }
 
     function screenshot() {
@@ -83,8 +99,8 @@ window.onload = function () {
             // based on example code from
             // https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
             (async () => {
-                const {data: {text}} = await scheduler.addJob('recognize', canvasSelection);
-                let result = text;
+                const {data} = await scheduler.addJob('recognize', canvasSelection);
+                let result = data.text;
 
                 // check multiline
                 if (multilineSwitch.checked)
@@ -123,6 +139,7 @@ window.onload = function () {
                 // update counter
                 processCounter--; // decrease counter
                 if (result.length >= 3) {
+                    words = data.words;
                     handleResult(result);
                 }
             })();
