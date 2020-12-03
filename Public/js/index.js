@@ -12,6 +12,15 @@ window.onload = function () {
     const speech = document.querySelector('#speech');
     const lowercase = document.querySelector('#lowercase');
     const fontsize = document.querySelector('#fontsize');
+    const darkMode = document.querySelector('#darkMode');
+
+    darkMode.onchange = function () {
+        if (darkMode.checked) {
+            document.body.classList.add('mdui-theme-layout-dark');
+        } else {
+            document.body.classList.remove('mdui-theme-layout-dark');
+        }
+    }
 
     fontsize.onchange = function () {
         captionText.style.fontSize = fontsize.value.toString() + 'vh';
