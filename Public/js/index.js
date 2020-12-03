@@ -63,7 +63,7 @@ window.onload = function () {
         canvasLive.width = cameraWidth;
         canvasLive.getContext("2d").drawImage(video, 0, 0);
         let canvasLiveContext = canvasLive.getContext('2d');
-        canvasLiveContext.strokeStyle = 'red';
+        canvasLiveContext.strokeStyle = 'yellow';
         canvasLiveContext.strokeRect(sX, sY, sWidth, sHeight);
         // based on example from
         // https://tesseract.projectnaptha.com/
@@ -104,7 +104,7 @@ window.onload = function () {
 
                 // check multiline
                 if (multilineSwitch.checked)
-                    result = text.toString().replaceAll(/\r?\n|\r/g, ' '); // replace new line with space
+                    result = result.toString().replaceAll(/\r?\n|\r/g, ' '); // replace new line with space
                 else
                     result = result.split('\n')[0].trim();
 
