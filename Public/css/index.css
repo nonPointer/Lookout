@@ -14,6 +14,7 @@
 }
 
 #preview {
+    margin-top: 10vh;
     width: 100%;
     text-align: center;
 }
@@ -24,6 +25,7 @@
 
 #captionText {
     font-size: xx-large;
+    margin: 5vh auto;
 }
 
 label.mdui-switch {
@@ -32,4 +34,9 @@ label.mdui-switch {
 
 i {
     margin-right: 2vh;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
 }
