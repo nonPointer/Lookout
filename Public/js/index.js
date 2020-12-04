@@ -42,7 +42,7 @@ window.onload = function () {
     // global var
     let cameraHeight;
     let cameraWidth;
-    let processInterval = 1000;
+    let processInterval = 800;
     let processCounter = 0;
     // center the source section
     let sWidth = 240;
