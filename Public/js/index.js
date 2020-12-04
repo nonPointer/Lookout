@@ -116,7 +116,7 @@ window.onload = function () {
                 // replace abnormal char
                 result = result.toString().replaceAll(/\s{2,}|[^\sa-zA-Z0-9]/g, '');
                 // replace single char except a
-                result = result.replaceAll(/\s[^a]\s/g, '');
+                result = result.replaceAll(/(\s|^)[^a](\s|$)/g, '');
 
                 result = result.trim();
                 t = result.split(' ');
